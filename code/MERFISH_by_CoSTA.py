@@ -163,7 +163,7 @@ net.apply(weights_init)
 
 #t1, t2 = 0.5, 2.0
 t1, t2 = 0.8, 1.2
-num_epoch = 11
+num_epoch = 6
 batch_size = 170
 X_all_tensor = torch.tensor(new_X).float()
 
