@@ -161,10 +161,10 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 net = ConvNet_MERFISH()
 net.apply(weights_init)
 
-t1, t2 = 0.5, 2.0
-#t1, t2 = 0.8, 1.2
+#t1, t2 = 0.5, 2.0
+t1, t2 = 0.8, 1.2
 num_epoch = 11
-batch_size = 32
+batch_size = 170
 X_all_tensor = torch.tensor(new_X).float()
 
 y_pred = net.forward_feature(X_all_tensor)
@@ -201,7 +201,7 @@ for k in range(1,num_epoch):
     old_label=y_label.copy()
     net.to(device)
     
-    X_train, X_test, y_train, y_test = train_test_split(new_X, au_tar, test_size=0.05)
+    X_train, X_test, y_train, y_test = train_test_split(new_X, au_tar, test_size=0.001)
     X_tensor=torch.tensor(X_train).float()
     y_tensor = torch.tensor(y_train).float()
     n = y_train.shape[0]
@@ -215,17 +215,17 @@ for k in range(1,num_epoch):
         loss.backward()
         opt.step()
         
-    if k%5==0:
-        net.to(torch.device("cpu"))
-        y_pred = net.forward_feature(X_all_tensor)
-        y_pred = torch.Tensor.cpu(y_pred).detach().numpy()
-        au_tar, y_label, embedding = evaluation(y_pred,n_neighbors=5,min_dist=0.0,
-                                                num_cluster=10,cluster_method='GMM') 
-        cm = confusion_matrix(old_label, y_label)
-        au_tar=au_tar[:,np.argmax(cm,axis=1).tolist()]
-        nmi = round(normalized_mutual_info_score(old_label, y_label),5)
-        print("NMI"+"("+str(k)+"/"+str(k-1)+"): "+str(nmi))
-        nmis.append(nmi)
+    #if k%5==0:
+    net.to(torch.device("cpu"))
+    y_pred = net.forward_feature(X_all_tensor)
+    y_pred = torch.Tensor.cpu(y_pred).detach().numpy()
+    au_tar, y_label, embedding = evaluation(y_pred,n_neighbors=5,min_dist=0.0,
+                                            num_cluster=10,cluster_method='GMM') 
+    cm = confusion_matrix(old_label, y_label)
+    au_tar=au_tar[:,np.argmax(cm,axis=1).tolist()]
+    nmi = round(normalized_mutual_info_score(old_label, y_label),5)
+    print("NMI"+"("+str(k)+"/"+str(k-1)+"): "+str(nmi))
+    nmis.append(nmi)
         
 torch.save(net, "merfish_models")
 net = torch.load("merfish_model")
