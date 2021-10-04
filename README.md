@@ -6,6 +6,8 @@ CoSTA: Unsupervised Convolutional Neural Network Learning for Spatial Transcript
 
 CoSTA is an analysis approach for understanding spatial gene relationship of spatial transcriptomics. 
 
+Please look at offical CoSTA github at https://github.com/rpmccordlab/CoSTA
+
 # Usage
 
 To reproduce results in Manuscript, please follow instruction in notebook tutorial under the foder of "CoSTA".
